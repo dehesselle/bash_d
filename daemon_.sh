@@ -82,9 +82,9 @@ function daemon_start
   done
 
   if [ -f $DAEMON_PIDFILE ]; then
-    echo_i "process started as pid $(cat $DAEMON_PIDFILE)"
+    echo_o "process started as pid $(cat $DAEMON_PIDFILE)"
   else
-    echo_w "no pidfile created"
+    echo_e "no pidfile created"
   fi
 }
 
@@ -96,7 +96,7 @@ function daemon_status
     if [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ]; then
       echo_i "pid $pid is alive"
     else
-      echo_i "pid $pid has died"
+      echo_w "pid $pid has died"
     fi
   else
     echo_i "process is not running"
@@ -127,7 +127,7 @@ function daemon_stop
         return 0
       fi
     else
-      echo_e "pid $pid was already gone"
+      echo_w "pid $pid was already gone"
       rm $DAEMON_PIDFILE
     fi
   else
