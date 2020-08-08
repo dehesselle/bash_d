@@ -26,9 +26,9 @@ function dependency_check
   fi
 
   while IFS= read -r line; do
-    if [[ "$line" =~ ([^:]+):.+(($HOMEBREW_ROOT|$MACPORTS_ROOT)/bin/[^ ]+)  ]]; then
+    if [[ "$line" =~ ([^:]+):.+(($HOMEBREW_ROOT|\$HOMEBREW_ROOT|$MACPORTS_ROOT|\$MACPORTS_ROOT)/bin/[^ ]+)  ]]; then
       local file=${BASH_REMATCH[1]}
-      local dependency=${BASH_REMATCH[2]}
+      local dependency=$(eval echo ${BASH_REMATCH[2]})
       if [ ! -f "$dependency" ]; then
         echo_e "$(basename $file): $dependency"
       fi
@@ -38,7 +38,11 @@ function dependency_check
   done < <(grep \
       --exclude=$(basename ${BASH_SOURCE[0]}) \
       -e "$HOMEBREW_ROOT/bin/" \
-      -e "$MACPORTS_ROOT/bin/" $INCLUDE_DIR/*.sh)
+      -e "\$HOMEBREW_ROOT/bin/" \
+      -e "$MACPORTS_ROOT/bin/" \
+      -e "\$MACPORTS_ROOT/bin/" \
+      $INCLUDE_DIR/*.sh \
+      )
 }
 
 ### aliases ####################################################################

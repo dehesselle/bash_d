@@ -14,9 +14,9 @@ include_guard
 
 ### aliases ####################################################################
 
-alias twitch="PATH=/opt/homebrew/bin:$PATH $HOME/Developer/wtwitch/wtwitch"
-alias twitch_list="PATH=/opt/homebrew/bin:$PATH $HOME/Developer/wtwitch/wtwitch c"
-alias twitch_watch="PATH=/opt/homebrew/bin:$PATH $HOME/Developer/wtwitch/wtwitch w"
+alias twitch="PATH=$HOMEBREW_ROOT/bin:$PATH $HOME/Developer/wtwitch/wtwitch"
+alias twitch_list="PATH=$HOMEBREW_ROOT/bin:$PATH $HOME/Developer/wtwitch/wtwitch c"
+alias twitch_watch="PATH=$HOMEBREW_ROOT/bin:$PATH $HOME/Developer/wtwitch/wtwitch w"
 
 ### main #######################################################################
 

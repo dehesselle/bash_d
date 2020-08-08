@@ -18,7 +18,7 @@ function sparsebundle_create
 
   [ -z $sparse_band_size ] && sparse_band_size=8M
 
-  sparse_band_size=$(/opt/homebrew/bin/numfmt --from=iec ${sparse_band_size^^})
+  sparse_band_size=$($HOMEBREW_ROOT/bin/numfmt --from=iec ${sparse_band_size^^})
   sparse_band_size=$(expr $sparse_band_size / 512)
 
   hdiutil create \
