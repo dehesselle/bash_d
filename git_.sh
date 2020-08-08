@@ -2,7 +2,7 @@ include_guard
 
 ### includes ###################################################################
 
-source $XDG_CONFIG_HOME/bash.d/echo_.sh
+include_file echo_.sh
 
 ### variables ##################################################################
 
