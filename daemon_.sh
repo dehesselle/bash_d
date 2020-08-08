@@ -2,7 +2,9 @@ include_guard
 
 ### description ################################################################
 
-# This file provides functions to write simple daemons.
+# This file provides functions to write simple daemons. You basically have
+# to override the function daemon_run with whatever you want to run and call
+# 'daemon_dispatch $1' as main function to get going.
 
 ### includes ###################################################################
 
@@ -11,6 +13,7 @@ include_file echo_.sh
 ### variables ##################################################################
 
 DAEMON_PIDFILE=$TMPDIR/$(basename $0).pid
+DAEMON_SHUTDOWN_GRACE=10
 
 ### functions ##################################################################
 
@@ -61,15 +64,28 @@ function daemon_restart
 function daemon_run
 {
   echo_e "You need to override this function."
+  echo $BASHPID > $DAEMON_PIDFILE
 }
 
 function daemon_start
 {
+  if [ -f $DAEMON_PIDFILE ]; then
+    rm $DAEMON_PIDFILE
+  fi
+
   daemon_run &
 
-  local pid=$!
-  echo $pid > $DAEMON_PIDFILE
-  echo_i "started as pid $pid"
+  local seconds=0
+  while [ ! -f $DAEMON_PIDFILE ] && [ $seconds -lt 10 ]; do
+    ((seconds+=1))
+    sleep 1
+  done
+
+  if [ -f $DAEMON_PIDFILE ]; then
+    echo_i "process started as pid $(cat $DAEMON_PIDFILE)"
+  else
+    echo_w "no pidfile created"
+  fi
 }
 
 function daemon_status
@@ -91,22 +107,28 @@ function daemon_stop
 {
   if [ -f $DAEMON_PIDFILE ]; then
     local pid=$(cat $DAEMON_PIDFILE)
-    echo_i "stopping pid $pid"
-    kill -TERM $pid
 
-    local seconds=0
-    while [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ] && [ $seconds -lt 6 ]; do
-      echo_i "waiting for process to shut down"
-      sleep 1
-      ((seconds++))
-    done
+    if [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ]; then
+      kill -TERM $pid
 
-    if [ $seconds -eq 6 ]; then
-      echo_e "pid $pid failed to shutdown after $seconds seconds"
-      return 1
+      local seconds=0
+      while [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ] && [ $seconds -lt $DAEMON_SHUTDOWN_GRACE ]; do
+        echo_i "waiting for pid $pid to shut down..."
+        sleep 5
+        ((seconds+=5))
+      done
+
+      if [ $seconds -gt $DAEMON_SHUTDOWN_GRACE ]; then
+        echo_e "pid $pid failed to shut down after $seconds seconds"
+        return 1
+      else
+        echo_o "shut down"
+        rm $DAEMON_PIDFILE
+        return 0
+      fi
     else
+      echo_e "pid $pid was already gone"
       rm $DAEMON_PIDFILE
-      return 0
     fi
   else
     echo_e "no process running"
