@@ -1,3 +1,4 @@
+platform_darwin_only
 include_guard
 
 ### includes ###################################################################

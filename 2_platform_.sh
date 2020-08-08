@@ -1,5 +1,9 @@
-platform_darwin_only
 include_guard
+
+### description ################################################################
+
+# This file provides a mechanism to restrict sourcing a script to specific
+# platforms.
 
 ### includes ###################################################################
 
@@ -7,7 +11,8 @@ include_guard
 
 ### variables ##################################################################
 
-# Nothing here.
+[ "$(uname)" = "Darwin" ] && PLATFORM_DARWIN=true || PLATFORM_DARWIN=false
+[ "$(uname)" = "Linux"  ] && PLATFORM_LINUX=true  || PLATFORM_LINUX=false
 
 ### functions ##################################################################
 
@@ -15,8 +20,8 @@ include_guard
 
 ### aliases ####################################################################
 
-# generate type.xml for ImageMagick to see fonts in ~/Library/Fonts
-alias imagemagick_type_regen='find $HOME/Library/Fonts -type f -name '\''*.ttf'\'' | imagemagick_type_gen -f - > $HOME/Library/Fonts/type.xml'
+alias platform_darwin_only='$PLATFORM_DARWIN && true || return'
+alias platform_linux_only='$PLATFORM_LINUX && true || return'
 
 ### main #######################################################################
 
