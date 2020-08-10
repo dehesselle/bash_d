@@ -18,7 +18,13 @@ INCLUDE_DIR=$XDG_CONFIG_HOME/bash.d  # this is where all scripts are to be found
 function include_file
 {
   local file=$1
-  source $INCLUDE_DIR/$file
+
+  if [ -f $INCLUDE_DIR/$file ]; then
+    source $INCLUDE_DIR/$file
+  else
+    echo "[error] $FUNCNAME $INCLUDE_DIR/$file not found"
+    exit 1
+  fi
 }
 
 ### aliases ####################################################################
