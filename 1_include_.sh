@@ -14,7 +14,9 @@ include_guard 2>/dev/null || true  # special treatment for the first run
 
 ### variables ##################################################################
 
-INCLUDE_DIR=$XDG_CONFIG_HOME/bash.d  # this is where all scripts are to be found
+if [ -z $INCLUDE_DIR ]; then
+  INCLUDE_DIR=$XDG_CONFIG_HOME/bash.d  # repository location
+fi
 
 ### functions ##################################################################
 
