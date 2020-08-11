@@ -15,8 +15,8 @@ include_file echo_.sh
 
 ### variables ##################################################################
 
-DAEMON_PIDFILE=$TMPDIR/$(basename $0).pid
-DAEMON_SHUTDOWN_GRACE=10
+DAEMON_PIDFILE=/tmp/$(basename $0).pid
+DAEMON_SHUTDOWN_GRACE=20
 
 ### functions ##################################################################
 
