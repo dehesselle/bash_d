@@ -1,6 +1,10 @@
 platform_darwin_only
 include_guard
 
+### description ################################################################
+
+# FIXME: mount will fail if not owner of mountpoint
+
 ### includes ###################################################################
 
 include_file echo_.sh
