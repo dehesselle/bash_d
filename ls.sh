@@ -14,8 +14,10 @@ include_guard
 
 ### aliases ####################################################################
 
-# colorful ls
-[ -x "$(command -v gls)" ] && alias ls='gls --color=auto'
+# colorful GNU ls
+if [ -x $HOMEBREW_ROOT/bin/gls ]; then
+  alias ls='$HOMEBREW_ROOT/bin/gls --color=auto'
+fi
 
 ### main #######################################################################
 
