@@ -14,6 +14,7 @@ include_file echo_.sh
 ### variables ##################################################################
 
 declare -g -A INI_DATA   # key-value store
+INI_FILE=                # last file that has been accessed
 
 ### functions ##################################################################
 
@@ -32,9 +33,9 @@ function ini_get
 
 function ini_read
 {
-  local file=$1
+  INI_FILE=$1
 
-  if [ -f $file ]; then
+  if [ -f $INI_FILE ]; then
     while IFS= read -r line; do
       if [[ "$line" =~ ([^|]+)\|([^|]+)\|([^|]*) ]]; then
         local section="${BASH_REMATCH[1]}"
@@ -70,9 +71,9 @@ function ini_read
   G
   s/\(.*\)\n\(.*\)/\2|\1/
   p
-}' $file)
+}' $INI_FILE)
   else
-    echo_e "file not found: $file"
+    echo_e "file not found: $INI_FILE"
     exit 1
   fi
 }
@@ -94,7 +95,7 @@ function ini_set
 
 function ini_write
 {
-  local file=$1
+  INI_FILE=$1
 
   >$file
 
@@ -109,12 +110,12 @@ function ini_write
       if   [ "$section"  = "1default" ]; then
         :    # do not create a section for "globals"
       elif [ "$section" != "$section_old" ]; then
-        echo ""           >> $file
-        echo "[$section]" >> $file
+        echo ""           >> $INI_FILE
+        echo "[$section]" >> $INI_FILE
         section_old=$section
       fi
 
-      echo "$key = ${INI_DATA[$section|$key]}" >> $file
+      echo "$key = ${INI_DATA[$section|$key]}" >> $INI_FILE
     fi
   done
 }
