@@ -16,6 +16,7 @@ include_file xdg_.sh
 
 ### variables ##################################################################
 
+DAEMON_NAME=process
 DAEMON_PIDFILE=$XDG_RUNTIME_DIR/$(basename $0).pid
 DAEMON_SHUTDOWN_GRACE=20
 
@@ -33,7 +34,7 @@ function daemon_dispatch
       fi
       if [ $pid -ne 0 ]; then
          if [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ]; then
-            echo_e "already running as pid $pid"
+            echo_e "$DAEMON_NAME running as pid $pid"
             return 1
          else
             echo_w "found a stale pidfile"
@@ -68,7 +69,7 @@ function daemon_restart
 function daemon_run
 {
   echo_e "You need to override this function."
-  echo $BASHPID > $DAEMON_PIDFILE
+  echo $BASHPID > $DAEMON_PIDFILE   # you need to provide the pid
 }
 
 function daemon_start
@@ -86,7 +87,7 @@ function daemon_start
   done
 
   if [ -f $DAEMON_PIDFILE ]; then
-    echo_o "process started as pid $(cat $DAEMON_PIDFILE)"
+    echo_o "$DAEMON_NAME started as pid $(cat $DAEMON_PIDFILE)"
   else
     echo_e "no pidfile created"
   fi
@@ -98,12 +99,12 @@ function daemon_status
     local pid=$(cat $DAEMON_PIDFILE)
 
     if [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ]; then
-      echo_i "pid $pid is alive"
+      echo_i "$DAEMON_NAME is alive (pid $pid)"
     else
-      echo_w "pid $pid has died"
+      echo_w "$DAEMON_NAME has died (pid $pid)"
     fi
   else
-    echo_i "process is not running"
+    echo_i "$DAEMON_NAME is not running"
   fi
 }
 
@@ -117,13 +118,13 @@ function daemon_stop
 
       local seconds=0
       while [ $(ps -p $pid >/dev/null 2>&1; echo $?) -eq 0 ] && [ $seconds -lt $DAEMON_SHUTDOWN_GRACE ]; do
-        echo_i "waiting for pid $pid to shut down..."
+        echo_i "waiting for $DAEMON_NAME (pid $pid) to shut down..."
         sleep 5
         ((seconds+=5))
       done
 
       if [ $seconds -gt $DAEMON_SHUTDOWN_GRACE ]; then
-        echo_e "pid $pid failed to shut down after $seconds seconds"
+        echo_e "$DAEMON_NAME (pid $pid) failed to shut down after $seconds seconds"
         return 1
       else
         echo_o "shut down"
@@ -131,11 +132,11 @@ function daemon_stop
         return 0
       fi
     else
-      echo_w "pid $pid was already gone"
+      echo_w "$DAEMON_NAME (pid $pid) was already gone"
       rm $DAEMON_PIDFILE
     fi
   else
-    echo_e "no process running"
+    echo_e "$DAEMON_NAME isn't running"
   fi
 }
 
