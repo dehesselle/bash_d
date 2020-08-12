@@ -12,10 +12,11 @@ include_guard
 ### includes ###################################################################
 
 include_file echo_.sh
+include_file xdg_.sh
 
 ### variables ##################################################################
 
-DAEMON_PIDFILE=/tmp/$(basename $0).pid
+DAEMON_PIDFILE=$XDG_RUNTIME_DIR/$(basename $0).pid
 DAEMON_SHUTDOWN_GRACE=20
 
 ### functions ##################################################################
