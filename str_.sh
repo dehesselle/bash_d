@@ -17,6 +17,38 @@ include_guard
 
 ### functions ##################################################################
 
+function str_get_token
+{
+  local string=$1
+  local separator=$2
+  local token_no=$3
+
+  local start_pos=0
+  local token=
+  local count=0
+
+  # The easier way would be to loop using the IFS, but that would lose
+  # trailing whitespaces if there were more than one.
+
+  for ((i=0; i<${#string}; i++)); do
+    if [ "${string:i:1}" = "$separator" ]; then
+      token=${string:start_pos:i-start_pos}
+      start_pos=$((i+1))
+      count=$((count+1))
+
+      if [ $count -eq $token_no ]; then
+        break
+      fi
+    fi
+  done
+
+  if [ $count -ne $token_no ]; then
+    token=${string:start_pos}
+  fi
+
+  echo $token
+}
+
 function str_is_empty
 {
   local string=$1
