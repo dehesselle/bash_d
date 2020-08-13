@@ -10,7 +10,7 @@ include_guard 2>/dev/null || true  # special treatment for the first run
 
 ### includes ###################################################################
 
-# Nothing here.
+include_file platform_.sh 2>/dev/null || true
 
 ### variables ##################################################################
 
