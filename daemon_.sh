@@ -134,9 +134,11 @@ function daemon_stop
     else
       echo_w "$DAEMON_NAME (pid $pid) was already gone"
       rm $DAEMON_PIDFILE
+      return 0
     fi
   else
-    echo_e "$DAEMON_NAME isn't running"
+    echo_w "$DAEMON_NAME isn't running"
+    return 1
   fi
 }
 
