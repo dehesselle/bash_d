@@ -10,6 +10,7 @@ include_guard 2>/dev/null || true  # special treatment for the first run
 
 ### includes ###################################################################
 
+include_file echo_.sh 2>/dev/null || true
 include_file platform_.sh 2>/dev/null || true
 
 ### variables ##################################################################
@@ -26,8 +27,18 @@ function include_file
 
   if [ -f $INCLUDE_DIR/$file ]; then
     source $INCLUDE_DIR/$file
+    if [ $? -ne 0 ]; then
+      echo_e "failed to include $file" 2>/dev/null
+      if [ $? -ne 0 ]; then   # fallback for unforseen cases
+        echo "[error] failed to include $file"
+      fi
+      exit 1
+    fi
   else
-    echo "[error] $FUNCNAME $INCLUDE_DIR/$file not found"
+    echo_e "$FUNCNAME $INCLUDE_DIR/$file not found"
+    if [ $? -ne 0 ]; then     # fallback for unforseen cases
+      echo "[error] $FUNCNAME $INCLUDE_DIR/$file not found"
+    fi
     exit 1
   fi
 }
@@ -39,7 +50,7 @@ alias include_guard='declare -a INCLUDE_FILES; [[ " ${INCLUDE_FILES[@]} " =~ " $
 ### main #######################################################################
 
 if [ ! -d $INCLUDE_DIR ]; then  # this can happen if XDG_CONFIG_HOME isn't set
-  echo "error: INCLUDE_DIR invalid"
+  echo "[error] INCLUDE_DIR invalid"
   exit 1
 fi
 
