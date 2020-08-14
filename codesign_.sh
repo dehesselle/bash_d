@@ -35,7 +35,7 @@ function codesign_files
 function codesign_libs_recursively
 {
   local start_dir=$1
-  local options=$    # optional
+  local options=$2   # optional
 
   for lib in $(find $start_dir -name '*.dylib' -o -name '*.so'); do
     codesign_file $lib $options
