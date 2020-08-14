@@ -32,7 +32,12 @@ function ini_get
     local key=$2
   fi
 
-   echo ${INI_DATA[$section|$key]}
+  if [ ${INI_DATA[$section|$key]+dummy} ]; then
+    echo ${INI_DATA[$section|$key]}
+  else
+    echo_e "no value for $section|$key"
+    echo ""
+  fi
 }
 
 function ini_read
