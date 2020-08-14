@@ -33,10 +33,10 @@ function _echo_message
 
 ### aliases ####################################################################
 
-alias echo_e='_echo_message "$FUNCNAME" "error" "$ANSI_FG_RED_BOLD"'
-alias echo_i='_echo_message "$FUNCNAME" "info" "$ANSI_FG_BLUE_BOLD"'
-alias echo_o='_echo_message "$FUNCNAME" "ok" "$ANSI_FG_GREEN_BOLD"'
-alias echo_w='_echo_message "$FUNCNAME" "warning" "$ANSI_FG_YELLOW_BOLD"'
+alias echo_e='>&2 _echo_message "$FUNCNAME" "error" "$ANSI_FG_RED_BOLD"'
+alias echo_i='>&2 _echo_message "$FUNCNAME" "info" "$ANSI_FG_BLUE_BOLD"'
+alias echo_o='>&2 _echo_message "$FUNCNAME" "ok" "$ANSI_FG_GREEN_BOLD"'
+alias echo_w='>&2 _echo_message "$FUNCNAME" "warning" "$ANSI_FG_YELLOW_BOLD"'
 
 ### main #######################################################################
 
