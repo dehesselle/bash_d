@@ -19,6 +19,7 @@ function notarization_request
   local app=$1
   local bundle_id=$2
 
+  # Since '--password' is missing, it will prompt for it.
   xcrun altool \
     --notarize-app \
     --primary-bundle-id "$bundle_id" \
