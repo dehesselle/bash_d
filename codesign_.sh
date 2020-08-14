@@ -6,7 +6,8 @@ include_guard
 
 ### includes ###################################################################
 
-# Nothing here.
+include_file developer_.sh
+include_file str_.sh
 
 ### variables ##################################################################
 
@@ -14,7 +15,23 @@ include_guard
 
 ### functions ##################################################################
 
-# Nothing here.
+function codesign_file
+{
+  local file=$1
+  local options=$2   # optional
+
+  codesign --verbose --options runtime --timestamp $options --sign "$DEVELOPER_ID" $file
+}
+
+function codesign_files
+{
+  local dir=$1
+  local options=$2   # optional
+
+  for file in $(find $dir -type f -maxdepth 1); do
+    codesign_file $file $options
+  done
+}
 
 ### aliases ####################################################################
 

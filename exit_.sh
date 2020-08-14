@@ -1,12 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # https://github.com/dehesselle/bash_d
 
-platform_darwin_only
 include_guard
 
 ### includes ###################################################################
 
-include_file developer_.sh
+include_file echo_.sh
 
 ### variables ##################################################################
 
@@ -14,22 +13,19 @@ include_file developer_.sh
 
 ### functions ##################################################################
 
-function notarization_request
+function exit_if_file_missing
 {
-  local app=$1
-  local bundle_id=$2
+  local file=$1
 
-  xcrun altool \
-    --notarize-app \
-    --primary-bundle-id "$bundle_id" \
-    --username "$DEVELOPER_USERNAME" \
-    --file $app
+  if [ ! -f "$file" ]; then
+    echo_e "$file"
+    exit 1
+  fi
 }
 
 ### aliases ####################################################################
 
-alias notarization_info='xcrun altool --username "$DEVELOPER_USERNAME" --notarization-info'
-alias notarization_staple='xcrun stapler staple'
+# Nothing here.
 
 ### main #######################################################################
 
