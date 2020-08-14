@@ -7,7 +7,6 @@ include_guard
 ### includes ###################################################################
 
 include_file developer_.sh
-include_file str_.sh
 
 ### variables ##################################################################
 
@@ -30,6 +29,16 @@ function codesign_files
 
   for file in $(find $dir -type f -maxdepth 1); do
     codesign_file $file $options
+  done
+}
+
+function codesign_libs_recursively
+{
+  local start_dir=$1
+  local options=$    # optional
+
+  for lib in $(find $start_dir -name '*.dylib' -o -name '*.so'); do
+    codesign_file $lib $options
   done
 }
 
