@@ -10,34 +10,32 @@ include_file echo_.sh
 
 ### variables ##################################################################
 
-ERROR_COUNT=0
+# Nothing here.
 
 ### functions ##################################################################
 
 function error_catch
 {
-  local file=$1
-  local line=$2
-  local func=$3
-  local command=$4
-  local rc=$5
+  local rc=$1
 
-  [ -z $func ] && func="main" || true
+  local index=0
+  local output
 
-  ((ERROR_COUNT++))
+  while output=$(caller $index); do
+    if [ $index -eq 0 ]; then
+      echo_e "rc=$rc $ANSI_FG_YELLOW_BRIGHT$BASH_COMMAND$ANSI_FG_RESET"
+    fi
 
-  case $ERROR_COUNT in
-    1) echo_e "($file:$line) $func failed with rc=$rc"
-       echo_e "              $ANSI_FG_YELLOW_BRIGHT$command$ANSI_FG_RESET"
-       ;;
-    *) echo_e "($file:$line) <- $func"
-       ;;
-  esac
+    echo_e $output
+    ((index+=1))
+  done
+
+  exit $rc
 }
 
 ### aliases ####################################################################
 
-alias error_trace_enable='set -e -o errtrace; trap'\'' error_catch "${BASH_SOURCE[0]}" "$LINENO" "$FUNCNAME" "${BASH_COMMAND}" "${?}"'\'' ERR'
+alias error_trace_enable='set -o errtrace; trap '\''error_catch ${?}'\'' ERR'
 
 ### main #######################################################################
 
