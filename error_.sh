@@ -36,6 +36,7 @@ function error_catch
 ### aliases ####################################################################
 
 alias error_trace_enable='set -o errtrace; trap '\''error_catch ${?}'\'' ERR'
+alias error_trace_disable='trap - ERR'
 
 ### main #######################################################################
 
