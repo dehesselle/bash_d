@@ -26,7 +26,7 @@ include_file echo_.sh
 alias platform_darwin_only='$PLATFORM_DARWIN && true || return'
 alias platform_linux_only='$PLATFORM_LINUX && true || return'
 
-alias platform_bash4_and_above_only='if [ ${BASH_VERSINFO[0]} -ge 4 ]; then : ; else echo_e "bash 4.x required"; return 1; fi'
+alias platform_bash4_and_above_only='if [ ${BASH_VERSINFO[0]} -ge 4 ]; then : ; else echo_e "bash 4.x or above required"; return 1; fi'
 
 ### main #######################################################################
 
