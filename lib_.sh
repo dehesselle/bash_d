@@ -27,6 +27,9 @@ function lib_change_path
   local source_lib=${target##*/}   # get library filename from target location
 
   for binary in $binaries; do   # won't work with spaces in paths
+    if [[ $binary == *.so ]] || [[ $binary == *.dylib ]]; then
+      lib_reset_id $binary
+    fi
     local source=$(otool -L $binary | grep $source_lib | awk '{ print $1 }')
     install_name_tool -change $source $target $binary
   done
@@ -43,8 +46,12 @@ function lib_change_paths
   local binaries=${*:3}
 
   for binary in $binaries; do
-    for linked_lib in $(otool -L $binary | tail -n +3 | awk '{ print $1 }'); do
-      if [ -f $lib_dir/$(basename $linked_lib) ]; then
+    if [[ $binary == *.so ]] || [[ $binary == *.dylib ]]; then
+      lib_reset_id $binary
+    fi
+    for linked_lib in $(otool -L $binary | tail -n +2 | awk '{ print $1 }'); do
+      if [ "$(basename $binary)" != "$(basename $linked_lib)" ] &&
+         [ -f $lib_dir/$(basename $linked_lib) ]; then
         lib_change_path $target/$(basename $linked_lib) $binary
       fi
     done
@@ -60,12 +67,21 @@ function lib_change_siblings
   local dir=$1
 
   for lib in $dir/*.dylib; do
-    for linked_lib in $(otool -L $lib | tail -n +3 | awk '{ print $1 }'); do
-      if [ -f $dir/$(basename $linked_lib) ]; then
+    lib_reset_id $lib
+    for linked_lib in $(otool -L $lib | tail -n +2 | awk '{ print $1 }'); do
+      if [ "$(basename $lib)" != "$(basename $linked_lib)" ] &&
+         [ -f $dir/$(basename $linked_lib) ]; then
         lib_change_path @loader_path/$(basename $linked_lib) $lib
       fi
     done
   done
+}
+
+function lib_reset_id
+{
+  local lib=$1
+
+  install_name_tool -id $(basename $lib) $lib
 }
 
 ### aliases ####################################################################
