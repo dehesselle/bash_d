@@ -30,7 +30,7 @@ function lib_change_path
     if [[ $binary == *.so ]] || [[ $binary == *.dylib ]]; then
       lib_reset_id $binary
     fi
-    local source=$(otool -L $binary | grep $source_lib | awk '{ print $1 }')
+    local source=$(otool -L $binary | grep "$source_lib " | awk '{ print $1 }')
     install_name_tool -change $source $target $binary
   done
 }
