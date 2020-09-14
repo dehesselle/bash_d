@@ -19,6 +19,7 @@ function ramdisk_create
 {
   local size=$1   # unit is GiB
   local dir=$2    # mountpoint (optional)
+  local name=$3   # partition name (optional)
 
   if [ $# -eq 0 ]; then
     echo "usage: $FUNCNAME <size in GiB> [<target dir>]"
@@ -28,7 +29,7 @@ function ramdisk_create
     if [ -z $dir ]; then   # If no directory has been given, let diskutil
                            # handle everything, i.e. creating a ramdisk below
                            # '/Volumes'.
-      local name="RAM${size}G_$(whoami)"
+      name="RAM${size}G_$(whoami)"  # TODO: make unique
       local dir=/Volumes/$name
 
       if [ $(/sbin/mount | grep "$dir" | wc -l) -eq 0 ]; then
@@ -55,12 +56,15 @@ function ramdisk_create
         local rc=$?
 
         if [ $rc -eq 0 ]; then
+          if [ -z $name ]; then
+            name="RAMDISK"  # TODO: make unique?
+          fi
           # create filesystem in ramdisk device
-          /sbin/newfs_hfs -v "RAMDISK" $device
+          /sbin/newfs_hfs -v "$name" $device
           rc=$?
 
           if [ $rc -eq 0 ]; then
-            # mount Volume, hidden in Finder
+            # mount volume, hidden in Finder
             /sbin/mount -o noatime,nobrowse -t hfs $device $dir
             rc=$?
 
