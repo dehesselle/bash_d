@@ -30,7 +30,7 @@ if [ -z $XDG_RUNTIME_DIR ]; then
   # This is a bad choice as it does not have properties that the spec requries
   # (user-owned, 700 permission, guaranteed creation/destruction on
   # login/logout), but I have nothing better to offer.
-  export XDG_RUNTIME_DIR=/tmp
+  export XDG_RUNTIME_DIR=$HOME/.local/run
 fi
 
 ### functions ##################################################################
