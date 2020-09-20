@@ -26,6 +26,15 @@ function daemon_dispatch
 {
   local command=$1
 
+  local pid_dir=$(dirname $DAEMON_PIDFILE)
+  if [ ! -d $pid_dir ]; then
+    mkdir -p $pid_dir
+    if [ $? -ne 0 ]; then
+      echo_e "failed to create directory for pid: $pid_dir"
+      return 1
+    fi
+  fi
+
   case "$command" in
     start)
       local pid=0
