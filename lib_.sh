@@ -5,7 +5,7 @@ include_guard
 
 ### includes ###################################################################
 
-# Nothing here.
+include_file echo_.sh
 
 ### variables ##################################################################
 
@@ -32,8 +32,13 @@ function lib_change_path
        [ $(file $binary | grep "shared library" | wc -l) -eq 1 ]; then
       lib_reset_id $binary
     fi
+
     local source=$(otool -L $binary | grep "$source_lib " | awk '{ print $1 }')
-    install_name_tool -change $source $target $binary
+    if [ -z $source ]; then
+      echo_w "no $source_lib in $binary"
+    else
+      install_name_tool -change $source $target $binary
+    fi
   done
 }
 
