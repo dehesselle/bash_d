@@ -31,7 +31,7 @@ function pkg_expand
   /usr/sbin/pkgutil --expand "$pkg" $dir
 
   if [ $? -eq 0 ]; then
-    find $dir -maxdepth 1 -type d -name "*.pkg" -exec bash -c "cd {}; tar xpf Payload" \;
+    find $dir -maxdepth 1 -type d -name "*.pkg" -exec bash -c "cd '{}'; tar xpf Payload" \;
     cd $dir
     echo_o "done"
   else
