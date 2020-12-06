@@ -18,7 +18,8 @@ include_guard
 ### aliases ####################################################################
 
 # create patch file from diff output
-alias patch_from_diff='diff -Naur'
+alias patch_from_diff='diff -Naur'             # args: file1 file2
+alias patch_from_commit='git format-patch -1'  # args: commit-sha
 
 ### main #######################################################################
 
