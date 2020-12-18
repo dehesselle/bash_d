@@ -23,13 +23,13 @@ include_file echo_.sh
 
 function dependency_check
 {
-  if [ -z $HOMEBREW_ROOT ] || [ -z $MACPORTS_ROOT ]; then
-    echo_e "HOMEBREW_ROOT and/or MACPORTS_ROOT not set"
+  if [ -z $HOMEBREW_PREFIX ] || [ -z $MACPORTS_ROOT ]; then
+    echo_e "HOMEBREW_PREFIX and/or MACPORTS_ROOT not set"
     return -1
   fi
 
   while IFS= read -r line; do
-    if [[ "$line" =~ ([^:]+):.+(($HOMEBREW_ROOT|\$HOMEBREW_ROOT|$MACPORTS_ROOT|\$MACPORTS_ROOT)/bin/[^ ]+)  ]]; then
+    if [[ "$line" =~ ([^:]+):.+(($HOMEBREW_PREFIX|\$HOMEBREW_PREFIX|$MACPORTS_ROOT|\$MACPORTS_ROOT)/bin/[^ ]+)  ]]; then
       local file=${BASH_REMATCH[1]}
       local dependency=$(eval echo ${BASH_REMATCH[2]})
       if [ ! -f "$dependency" ]; then
@@ -40,8 +40,8 @@ function dependency_check
     fi
   done < <(grep \
       --exclude=$(basename ${BASH_SOURCE[0]}) \
-      -e "$HOMEBREW_ROOT/bin/" \
-      -e "\$HOMEBREW_ROOT/bin/" \
+      -e "$HOMEBREW_PREFIX/bin/" \
+      -e "\$HOMEBREW_PREFIX/bin/" \
       -e "$MACPORTS_ROOT/bin/" \
       -e "\$MACPORTS_ROOT/bin/" \
       $INCLUDE_DIR/*.sh \
