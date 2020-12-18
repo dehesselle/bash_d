@@ -17,7 +17,7 @@ include_file xdg_.sh
 ### variables ##################################################################
 
 DAEMON_NAME=process
-DAEMON_PIDFILE=$XDG_RUNTIME_DIR/$(basename $0).pid
+DAEMON_PIDFILE=$XDG_RUNTIME_DIR/$(basename -- $0).pid
 DAEMON_SHUTDOWN_GRACE=20
 
 ### functions ##################################################################
