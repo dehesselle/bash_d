@@ -23,6 +23,18 @@ function exit_if_file_missing
   fi
 }
 
+function exit_if_not_executable
+{
+  local file=$1
+
+  exit_if_file_missing $file
+
+  if [ ! -x "$file" ]; then
+    echo_e "$file"
+    exit 1
+  fi
+}
+
 ### aliases ####################################################################
 
 # Nothing here.
