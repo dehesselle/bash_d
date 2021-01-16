@@ -21,7 +21,7 @@ function _echo_message
   local args=${@:4}
 
   if [ ! -z $name ]; then
-    name=" ($name)"
+    name=" $name"
   fi
 
   if ansi_is_usable; then
@@ -33,10 +33,10 @@ function _echo_message
 
 ### aliases ####################################################################
 
-alias echo_e='>&2 _echo_message "$FUNCNAME" "err" "$ANSI_FG_RED_BOLD"'
-alias echo_i='>&2 _echo_message "$FUNCNAME" "inf" "$ANSI_FG_BLUE_BOLD"'
-alias echo_o='>&2 _echo_message "$FUNCNAME" "ok " "$ANSI_FG_GREEN_BOLD"'
-alias echo_w='>&2 _echo_message "$FUNCNAME" "wrn" "$ANSI_FG_YELLOW_BOLD"'
+alias echo_e='>&2 _echo_message "$FUNCNAME" " error " "$ANSI_FG_RED_BOLD"'
+alias echo_i='>&2 _echo_message "$FUNCNAME" " info  " "$ANSI_FG_BLUE_BOLD"'
+alias echo_o='>&2 _echo_message "$FUNCNAME" "  ok   " "$ANSI_FG_GREEN_BOLD"'
+alias echo_w='>&2 _echo_message "$FUNCNAME" "warning" "$ANSI_FG_YELLOW_BOLD"'
 
 ### main #######################################################################
 
