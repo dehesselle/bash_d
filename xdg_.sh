@@ -35,7 +35,24 @@ fi
 
 ### functions ##################################################################
 
-# Nothing here.
+function xdg_create_dirs
+{
+  if [ ! -d "$XDG_CONFIG_HOME" ]; then
+    mkdir -p "$XDG_CONFIG_HOME"
+  fi
+
+  if [ ! -d "$XDG_CACHE_HOME" ]; then
+    mkdir -p "$XDG_CACHE_HOME"
+  fi
+
+  if [ ! -d "$XDG_DATA_HOME" ]; then
+    mkdir -p "$XDG_DATA_HOME"
+  fi
+
+  if [ ! -d "$XDG_RUNTIME_DIR" ]; then
+    mkdir -p "$XDG_RUNTIME_DIR"
+  fi
+}
 
 ### aliases ####################################################################
 
