@@ -7,6 +7,9 @@ include_guard
 
 # XDG Base Directory Specification
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+#
+# You can either access the variables directly or use the helper-functions
+# 'xdg_get_xxx' that make sure the directories exist.
 
 ### includes ###################################################################
 
@@ -35,23 +38,38 @@ fi
 
 ### functions ##################################################################
 
-function xdg_create_dirs
+function xdg_get
 {
-  if [ ! -d "$XDG_CONFIG_HOME" ]; then
-    mkdir -p "$XDG_CONFIG_HOME"
+  local var=$1
+
+  eval local dir="\$$var"
+
+  # XDG directories are expected to be created if they don't exist.
+  if [ ! -d "$dir" ]; then
+    mkdir -p "$dir"
   fi
 
-  if [ ! -d "$XDG_CACHE_HOME" ]; then
-    mkdir -p "$XDG_CACHE_HOME"
-  fi
+  echo $dir
+}
 
-  if [ ! -d "$XDG_DATA_HOME" ]; then
-    mkdir -p "$XDG_DATA_HOME"
-  fi
+function xdg_get_config_home
+{
+  echo $(xdg_get XDG_CONFIG_HOME)
+}
 
-  if [ ! -d "$XDG_RUNTIME_DIR" ]; then
-    mkdir -p "$XDG_RUNTIME_DIR"
-  fi
+function xdg_get_cache_home
+{
+  echo $(xdg_get XDG_CACHE_HOME)
+}
+
+function xdg_get_data_home
+{
+  echo $(xdg_get XDG_DATA_HOME)
+}
+
+function xdg_get_runtime_dir
+{
+  echo $(xdg_get XDG_RUNTIME_DIR)
 }
 
 ### aliases ####################################################################
