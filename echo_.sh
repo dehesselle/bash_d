@@ -33,6 +33,7 @@ function _echo_message
 
 ### aliases ####################################################################
 
+alias echo_d='>&2 _echo_message "$FUNCNAME" " debug " "$ANSI_FG_BLACK_BOLD"'
 alias echo_e='>&2 _echo_message "$FUNCNAME" " error " "$ANSI_FG_RED_BOLD"'
 alias echo_i='>&2 _echo_message "$FUNCNAME" " info  " "$ANSI_FG_BLUE_BOLD"'
 alias echo_o='>&2 _echo_message "$FUNCNAME" "  ok   " "$ANSI_FG_GREEN_BOLD"'
