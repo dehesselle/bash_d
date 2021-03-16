@@ -6,7 +6,7 @@ include_guard
 
 ### includes ###################################################################
 
-include_file developer_.sh
+include_file developer.sh
 
 ### variables ##################################################################
 

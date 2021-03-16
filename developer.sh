@@ -5,8 +5,8 @@ include_guard
 
 ### includes ###################################################################
 
-include_file exit_.sh
-include_file ini_.sh
+include_file exit.sh
+include_file ini.sh
 
 ### variables ##################################################################
 

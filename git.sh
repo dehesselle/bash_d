@@ -5,7 +5,7 @@ include_guard
 
 ### includes ###################################################################
 
-include_file echo_.sh
+include_file echo.sh
 
 ### variables ##################################################################
 
@@ -13,31 +13,26 @@ include_file echo_.sh
 
 ### functions ##################################################################
 
-function exit_if_file_missing
+function git_delete_current_commit
 {
-  local file=$1
+  echo -e "$(git --no-pager log -1)\n\n"
+  echo -n "Delete this (yes/NO): "
+  local response
+  read response
 
-  if [ ! -f "$file" ]; then
-    echo_e "$file"
-    exit 1
-  fi
-}
-
-function exit_if_not_executable
-{
-  local file=$1
-
-  exit_if_file_missing $file
-
-  if [ ! -x "$file" ]; then
-    echo_e "$file"
-    exit 1
+  if [ "$response" = "yes" ]; then
+    git reset --hard HEAD~1
+  else
+    echo "cancelled"
   fi
 }
 
 ### aliases ####################################################################
 
-# Nothing here.
+alias git_delete_remote_ref='git push origin --delete' # branch or tag
+alias git_ignore_changes_add='git update-index --skip-worktree'
+alias git_ignore_changes_del='git update-index --no-skip-worktree'
+alias git_ignore_changes_list='git ls-files -v . | grep ^S'
 
 ### main #######################################################################
 

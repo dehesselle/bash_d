@@ -11,8 +11,8 @@ include_guard
 
 ### includes ###################################################################
 
-include_file echo_.sh
-include_file xdg_.sh
+include_file echo.sh
+include_file xdg.sh
 
 ### variables ##################################################################
 
