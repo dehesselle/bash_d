@@ -1,15 +1,18 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
-
-include_guard
 
 ### description ################################################################
 
-# This files provides convenience functions for working with strings.
+# Provide string-related convenience functions.
+
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
 
 ### includes ###################################################################
 
-# Nothing here.
+include_guard
 
 ### variables ##################################################################
 
@@ -21,14 +24,14 @@ function str_get_token
 {
   local string=$1
   local separator=$2
-  local token_no=$3
-
-  local start_pos=0
-  local token=
-  local count=0
+  declare -i token_no=$3
 
   # The easier way would be to loop using the IFS, but that would lose
   # trailing whitespaces if there were more than one.
+
+  declare -i start_pos=0
+  declare -i count=0
+  local token=
 
   for ((i=0; i<${#string}; i++)); do
     if [ "${string:i:1}" = "$separator" ]; then
@@ -36,28 +39,25 @@ function str_get_token
       start_pos=$((i+1))
       count=$((count+1))
 
-      if [ $count -eq $token_no ]; then
+      if [ $count -eq "$token_no" ]; then
         break
       fi
     fi
   done
 
-  if [ $count -ne $token_no ]; then
+  if [ $count -ne "$token_no" ]; then
     token=${string:start_pos}
   fi
 
-  echo $token
+  echo "$token"
 }
 
 function str_is_empty
 {
   local string=$1
 
-  if [ ${#string} -eq 0 ]; then
-    echo true
-  else
-    echo false
-  fi
+  declare -i rc=${#string}
+  return "$rc"
 }
 
 ### aliases ####################################################################
