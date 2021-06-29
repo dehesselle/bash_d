@@ -52,14 +52,6 @@ function str_get_token
   echo "$token"
 }
 
-function str_is_empty
-{
-  local string=$1
-
-  declare -i rc=${#string}
-  return "$rc"
-}
-
 ### aliases ####################################################################
 
 # Nothing here.
