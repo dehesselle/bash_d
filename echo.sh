@@ -1,11 +1,20 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
 
-include_guard
+### description ################################################################
+
+# Provide colorful convenience functions for echo.
+
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
 
 ### includes ###################################################################
 
-include_file ansi.sh
+include_guard
+
+include_file ansi
 
 ### variables ##################################################################
 
@@ -18,14 +27,14 @@ function _echo_message
   local name=$1   # can be empty
   local type=$2
   local color=$3
-  local args=${@:4}
+  local args=${*:4}
 
-  if [ ! -z $name ]; then
+  if [ -n "$name" ]; then
     name=" $name"
   fi
 
   if ansi_is_usable; then
-    echo -e "$color[$type]$name$ANSI_FG_RESET $args"
+    echo -e "${color}[$type]$name$ANSI_FG_RESET $args"
   else
     echo "[$type]$name $args"
   fi
