@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # https://github.com/dehesselle/bash_d
 
-platform_bash4_and_above_only
+assert_bash4_and_above
 include_guard
 
 ### description ################################################################

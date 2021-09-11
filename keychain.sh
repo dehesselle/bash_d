@@ -61,4 +61,4 @@ function keychain_get_password
 
 ### main #######################################################################
 
-platform_darwin_only
+assert_darwin

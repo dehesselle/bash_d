@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # https://github.com/dehesselle/bash_d
 
-platform_darwin_only
+assert_darwin
 include_guard
 
 ### includes ###################################################################

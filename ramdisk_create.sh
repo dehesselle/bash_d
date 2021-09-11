@@ -1,4 +1,4 @@
-platform_darwin_only
+assert_darwin
 include_guard
 
 ### description ################################################################

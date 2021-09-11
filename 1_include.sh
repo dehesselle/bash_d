@@ -18,7 +18,7 @@
 include_guard 2>/dev/null || true
 
 include_file echo.sh 2>/dev/null || true
-include_file platform.sh 2>/dev/null || true
+include_file assert.sh 2>/dev/null || true
 
 ### variables ##################################################################
 

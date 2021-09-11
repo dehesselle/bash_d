@@ -1,21 +1,24 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
-
-include_guard
 
 ### description ################################################################
 
 # This file provides a mechanism to restrict sourcing a script to specific
 # platforms.
 
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
+
 ### includes ###################################################################
 
-include_file echo.sh
+include_guard
+include_file echo
 
 ### variables ##################################################################
 
-[ "$(uname)" = "Darwin" ] && PLATFORM_DARWIN=true || PLATFORM_DARWIN=false
-[ "$(uname)" = "Linux"  ] && PLATFORM_LINUX=true  || PLATFORM_LINUX=false
+# Nothing here.
 
 ### functions ##################################################################
 
@@ -23,10 +26,10 @@ include_file echo.sh
 
 ### aliases ####################################################################
 
-alias platform_darwin_only='$PLATFORM_DARWIN && true || return'
-alias platform_linux_only='$PLATFORM_LINUX && true || return'
+alias assert_darwin='[ "$(uname)" = "Darwin" ] && true || (echo_e "Darwin required" && return 1)'
+alias assert_linux='[ "$(unamne)" = "Linux"] && true || (echo_e "Linux required" && return 1)'
 
-alias platform_bash4_and_above_only='if [ ${BASH_VERSINFO[0]} -ge 4 ]; then : ; else echo_e "bash 4.x or above required"; return 1; fi'
+alias assert_bash4_and_above='[ ${BASH_VERSINFO[0]} -ge 4 ] && true || (echo_e "bash 4.x or above required" && return 1)'
 
 ### main #######################################################################
 
