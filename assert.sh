@@ -26,10 +26,12 @@ include_file echo
 
 ### aliases ####################################################################
 
-alias assert_darwin='[ "$(uname)" = "Darwin" ] && true || (echo_e "Darwin required" && return 1)'
-alias assert_linux='[ "$(unamne)" = "Linux"] && true || (echo_e "Linux required" && return 1)'
+# Bash version
+alias assert_bash4_and_above='[ ${BASH_VERSINFO[0]} -lt 4 ] && echo_e "bash 4.x or above required" && return 1 || true'
 
-alias assert_bash4_and_above='[ ${BASH_VERSINFO[0]} -ge 4 ] && true || (echo_e "bash 4.x or above required" && return 1)'
+# Unix platforms
+alias assert_darwin='[ "$(uname)" != "Darwin" ] && echo_e "Darwin required" && return 1 || true'
+alias assert_linux='[ "$(uname)" != "Linux" ] && echo_e "Linux required" && return 1 || true'
 
 ### main #######################################################################
 
