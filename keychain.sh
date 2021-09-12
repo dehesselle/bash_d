@@ -12,7 +12,9 @@
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
+
+assert_darwin
 
 include_guard
 include_file echo
@@ -61,4 +63,4 @@ function keychain_get_password
 
 ### main #######################################################################
 
-assert_darwin
+# Nothing here.
