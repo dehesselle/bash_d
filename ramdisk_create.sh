@@ -1,5 +1,5 @@
 assert_darwin
-include_guard
+bash_d_include_guard
 
 ### description ################################################################
 
@@ -7,7 +7,7 @@ include_guard
 
 ### includes ###################################################################
 
-include_file echo.sh
+bash_d_include echo.sh
 
 ### variables ##################################################################
 

@@ -12,9 +12,8 @@
 
 ### includes ###################################################################
 
-include_guard
-
-include_file ansi
+bash_d_include_guard
+bash_d_include ansi
 
 ### variables ##################################################################
 

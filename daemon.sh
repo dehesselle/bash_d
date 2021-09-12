@@ -14,10 +14,10 @@
 
 ### includes ###################################################################
 
-include_guard
+bash_d_include_guard
 
-include_file echo
-include_file xdg
+bash_d_include echo
+bash_d_include xdg
 
 ### variables ##################################################################
 

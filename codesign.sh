@@ -2,11 +2,11 @@
 # https://github.com/dehesselle/bash_d
 
 assert_darwin
-include_guard
+bash_d_include_guard
 
 ### includes ###################################################################
 
-include_file developer.sh
+bash_d_include developer.sh
 
 ### variables ##################################################################
 

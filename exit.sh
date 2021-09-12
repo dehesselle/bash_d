@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # https://github.com/dehesselle/bash_d
 
-include_guard
+bash_d_include_guard
 
 ### includes ###################################################################
 
-include_file echo.sh
+bash_d_include echo.sh
 
 ### variables ##################################################################
 

@@ -13,12 +13,12 @@
 
 ### includes ###################################################################
 
-include_guard
-include_file echo
+bash_d_include_guard
+bash_d_include echo
 
 ### variables ##################################################################
 
-# Nothing here.
+ASSERT_RC=0
 
 ### functions ##################################################################
 
@@ -27,11 +27,13 @@ include_file echo
 ### aliases ####################################################################
 
 # Bash version
-alias assert_bash4_and_above='[ ${BASH_VERSINFO[0]} -lt 4 ] && echo_e "bash 4.x or above required" && return 1 || true'
+alias assert_bash4_or_above='[ ${BASH_VERSINFO[0]} -lt 4 ] && echo_e "$(basename ${BASH_SOURCE[0]}) will be unavailable (depends on bash >= 4)" && return $LINENO || true'
 
 # Unix platforms
-alias assert_darwin='[ "$(uname)" != "Darwin" ] && echo_e "Darwin required" && return 1 || true'
-alias assert_linux='[ "$(uname)" != "Linux" ] && echo_e "Linux required" && return 1 || true'
+alias assert_darwin='[ "$(uname)" != "Darwin" ] && echo_e "Darwin required" && return $LINENO || true'
+alias assert_linux='[ "$(uname)" != "Linux" ] && echo_e "Linux required" && return $LINENO || true'
+
+alias assert_ok='ASSERT_RC=$?; [ $ASSERT_RC -ne 0 ] && echo_e "assert_ok rc=$ASSERT_RC" && return $LINENO'
 
 ### main #######################################################################
 

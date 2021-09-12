@@ -2,7 +2,7 @@
 # https://github.com/dehesselle/bash_d
 
 assert_darwin
-include_guard
+bash_d_include_guard
 
 ### includes ###################################################################
 
