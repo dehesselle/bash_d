@@ -28,19 +28,29 @@ fi
 
 ### functions ##################################################################
 
-function include_file
+function include_file__
 {
-  local file=$1
+  local from=$1
+  local file=$2
 
   file=${file/.sh}.sh  # make sure filename has suffix
 
-  # shellcheck disable=SC1090 # this include is dynamic on purpose
-  if ! source "$INCLUDE_DIR/$file" 2>/dev/null; then
-    if ! echo_e "failed to include $file" 2>/dev/null; then
-      # fallback if echo_e not available (super early failure!)
-      echo "[error] failed to include $file"
+  if [ -f "$file" ]; then
+    # shellcheck disable=SC1090 # this include is dynamic on purpose
+    if ! source "$INCLUDE_DIR/$file"; then  # assertion stopped the include
+      if alias | grep "echo_e" >/dev/null; then  # safeguard against missing echo_e
+        echo_e "$(basename $from) depends on $(basename $file)"
+      else
+        >&2 echo "error: $(basename $from) depends on $(basename $file) [$FUNCNAME]"
+      fi
+      exit 1
     fi
-
+  else
+    if alias | grep "echo_e" >/dev/null; then  # safeguard against missing echo_e
+      echo_e "file not found: $file"
+    else
+      >&2 echo "error: file not found: $file [$FUNCNAME]"
+    fi
     exit 1
   fi
 }
@@ -55,10 +65,12 @@ alias include_guard=\
 '  INCLUDE_FILES+=("${BASH_SOURCE[0]}"); '\
 'fi '
 
+alias include_file='include_file__ ${BASH_SOURCE[0]}'
+
 ### main #######################################################################
 
 if [ ! -d "$INCLUDE_DIR" ]; then  # this can happen if XDG_CONFIG_HOME isn't set
-  echo "[error] INCLUDE_DIR invalid"
+  echo "error: INCLUDE_DIR invalid [${BASH_SOURCE[0]}]"
   exit 1
 fi
 
