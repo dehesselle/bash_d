@@ -29,10 +29,7 @@ function git_delete_current_commit
 
 ### aliases ####################################################################
 
-alias git_delete_remote_ref='git push origin --delete' # branch or tag
-alias git_ignore_changes_add='git update-index --skip-worktree'
-alias git_ignore_changes_del='git update-index --no-skip-worktree'
-alias git_ignore_changes_list='git ls-files -v . | grep ^S'
+# Nothing here.
 
 ### main #######################################################################
 

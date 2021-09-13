@@ -24,8 +24,7 @@ function path_remove
 
 ### aliases ####################################################################
 
-# show directories that are in PATH
-alias path_show='echo -e ${PATH//:/\\n}'
+# Nothing here.
 
 ### main #######################################################################
 
