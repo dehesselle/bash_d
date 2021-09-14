@@ -66,12 +66,10 @@ function bash_d_include_absolute
 
 function bash_d_include_all
 {
-  BASH_D_FAIL_ON_INCLUDE_ERROR=false
   for file in "$BASH_D_DIR"/*.sh; do
-    #echo "file=$file"
-    bash_d_include_absolute $FUNCNAME $LINENO $(basename $file)
+    BASH_D_FAIL_ON_INCLUDE_ERROR=false \
+      bash_d_include_absolute $FUNCNAME $LINENO $(basename $file)
   done
-  BASH_D_FAIL_ON_INCLUDE_ERROR=true
 }
 
 function bash_d_include_relative
@@ -86,6 +84,12 @@ function bash_d_include_relative
   bash_d_include_absolute $source_file $source_file_line_no $target_file
 }
 
+function bash_d_is_included
+{
+  local file=$1
+
+  return [[ " ${BASH_D_FILES[@]} " =~ " $file " ]]
+}
 ### aliases ####################################################################
 
 alias bash_d_include_guard=\
@@ -97,6 +101,8 @@ alias bash_d_include_guard=\
 'fi '
 
 alias bash_d_include='bash_d_include_relative ${BASH_SOURCE[0]} $LINENO; BASH_D_RC=$?; [ $BASH_D_RC -ne 0 ] && return $BASH_D_RC || true #'
+
+alias bash_d_include_try='BASH_D_FAIL_ON_INCLUDE_ERROR=false bash_d_include_absolute ${BASH_SOURCE[0]} $LINENO'
 
 ### main #######################################################################
 
