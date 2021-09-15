@@ -29,10 +29,14 @@ function plist_get
   local key=$2
   local value_default=$3
 
-  if  ! /usr/libexec/PlistBuddy -c "Print $dict:$key" "$PLIST_FILE" 2>/dev/null &&
-      [ -n "$value_default" ]; then
-    plist_set "$dict" "$key" "$value_default"
-    echo "$value_default"
+  if ! /usr/libexec/PlistBuddy \
+      -c "Print $dict:$key" "$PLIST_FILE" 2>/dev/null; then
+    if [ -n "$value_default" ]; then
+      plist_set "$dict" "$key" "$value_default"
+      echo "$value_default"
+    else
+      return 1
+    fi
   fi
 }
 
