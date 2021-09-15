@@ -29,12 +29,6 @@ function plist_get
   local key=$2
   local value_default=$3
 
-  if [ $# -eq 2 ]; then
-    value_default=$key
-    key=$dict
-    dict=common
-  fi
-
   if  ! /usr/libexec/PlistBuddy -c "Print $dict:$key" "$PLIST_FILE" 2>/dev/null &&
       [ -n "$value_default" ]; then
     plist_set "$dict" "$key" "$value_default"
@@ -49,15 +43,9 @@ function plist_set
   local value=$3
   local type=$4   # optional, defaults to string
 
-  case $# in
-    2)  value=$key
-        key=$dict
-        dict=common
-        type=string
-        ;;
-    3)  type=string
-        ;;
-  esac
+  if [ -z "$type" ]; then
+    type=string
+  fi
 
   if ! /usr/libexec/PlistBuddy \
       -c "Set '$dict:$key' '$value'" "$PLIST_FILE" 2>/dev/null; then
@@ -73,11 +61,6 @@ function plist_del
 {
   local dict=$1
   local key=$2
-
-  if [ $# -eq 1 ]; then
-    key=$dict
-    dict=common
-  fi
 
   if ! /usr/libexec/PlistBuddy \
       -c "Delete '$dict:$key'" "$PLIST_FILE" 2>/dev/null; then
