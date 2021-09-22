@@ -2,7 +2,6 @@
 # https://github.com/dehesselle/bash_d
 
 assert_bash4_or_above
-bash_d_include_guard
 
 ### description ################################################################
 

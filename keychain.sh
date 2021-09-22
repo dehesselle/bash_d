@@ -16,7 +16,6 @@
 
 assert_darwin
 
-bash_d_include_guard
 bash_d_include echo
 
 ### variables ##################################################################

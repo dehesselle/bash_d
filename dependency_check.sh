@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # https://github.com/dehesselle/bash_d
 
-bash_d_include_guard
-
 ### description ################################################################
 
 # This script provides a function to parse all other scripts for potential

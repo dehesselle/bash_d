@@ -15,8 +15,7 @@
 
 # All of these need to be "or true" because they fail on the first run.
 
-bash_d_include_guard 2>/dev/null || true
-bash_d_include echo.sh 2>/dev/null || true
+bash_d_include echo   2>/dev/null || true
 bash_d_include assert 2>/dev/null || true
 
 ### variables ##################################################################
@@ -31,78 +30,57 @@ fi
 
 ### functions ##################################################################
 
-function bash_d_include_absolute
-{
-  local source_file=$1
-  local source_file_line_no=$2
-  local target_file=$3
-
-  source_file=$(basename $source_file)
-  target_file=$BASH_D_DIR/${target_file/.sh}.sh  # make sure filename has suffix
-
-  if [ -f "$target_file" ]; then
-    # shellcheck disable=SC1090 # this include is dynamic on purpose
-    if ! source "$target_file"; then
-      if alias | grep "echo_e" >/dev/null; then  # safeguard against missing echo_e
-        echo_e "$source_file will be unavailable (depends on $(basename $target_file))"
-      else
-        >&2 echo "error: $source_file will be unavailable (depends on $(basename $target_file)) [$FUNCNAME]"
-      fi
-      if $BASH_D_FAIL_ON_INCLUDE_ERROR; then
-        exit $source_file_line_no
-      else
-        return $source_file_line_no
-      fi
-    fi
-  else
-    if alias | grep "echo_e" >/dev/null; then  # safeguard against missing echo_e
-      echo_e "file not found: $target_file"
-    else
-      >&2 echo "error: file not found: $target_file [$FUNCNAME]"
-    fi
-    exit $source_file_line_no
-  fi
-}
-
 function bash_d_include_all
 {
+  local includes=$(mktemp $TMP/$FUNCNAME.XXXXXX)
+
+  echo "BASH_D_FAIL_ON_INCLUDE_ERROR=false" >> $includes
   for file in "$BASH_D_DIR"/*.sh; do
-    BASH_D_FAIL_ON_INCLUDE_ERROR=false \
-      bash_d_include_absolute $FUNCNAME $LINENO $(basename $file)
+    echo "bash_d_include $(basename $file)" >> $includes
   done
-}
 
-function bash_d_include_relative
-{
-  local source_file=$1
-  local source_file_line_no=$2
-
-  local target_file
-  target_file=$(sed -n "${source_file_line_no}"p "$source_file" |
-                awk '{ print $2 }')
-
-  bash_d_include_absolute $source_file $source_file_line_no $target_file
+  source $includes
+  rm $includes
 }
 
 function bash_d_is_included
 {
   local file=$1
 
-  return [[ " ${BASH_D_FILES[@]} " =~ " $file " ]]
+  if [[ " ${BASH_D_INCLUDE_FILES[*]} " =~ \
+        " $BASH_D_DIR/$(basename -s .sh $file).sh " ]]; then
+    return 0
+  else
+    return 1
+  fi
 }
+
 ### aliases ####################################################################
 
-alias bash_d_include_guard=\
-'declare -a BASH_D_FILES; '\
-'if [[ " ${BASH_D_FILES[@]} " =~ " ${BASH_SOURCE[0]} " ]]; then '\
-'  return; '\
+# shellcheck disable=SC2142 # too much trickery for shellcheck to digest
+alias bash_d_include=\
+'declare -a BASH_D_INCLUDE_FILES; '\
+'BASH_D_INCLUDE_FILE=$(sed -n ${LINENO}p ${BASH_SOURCE[0]} | awk '"'"'{ print $2 }'"'"'); '\
+'BASH_D_INCLUDE_FILE=$BASH_D_DIR/$(basename -s .sh $BASH_D_INCLUDE_FILE).sh; '\
+'if [[ " ${BASH_D_INCLUDE_FILES[@]} " =~ " ${BASH_D_INCLUDE_FILE} " ]]; then '\
+'  : ; '\
 'else '\
-'  BASH_D_FILES+=("${BASH_SOURCE[0]}"); '\
-'fi '
-
-alias bash_d_include='bash_d_include_relative ${BASH_SOURCE[0]} $LINENO; BASH_D_RC=$?; [ $BASH_D_RC -ne 0 ] && return $BASH_D_RC || true #'
-
-alias bash_d_include_try='BASH_D_FAIL_ON_INCLUDE_ERROR=false bash_d_include_absolute ${BASH_SOURCE[0]} $LINENO'
+'  if [ "$BASH_D_INCLUDE_FILE" = "$BASH_D_DIR/bash_d.sh" ] || source $BASH_D_INCLUDE_FILE; then '\
+'    BASH_D_INCLUDE_FILE=$(sed -n ${LINENO}p ${BASH_SOURCE[0]} | awk '"'"'{ print $2 }'"'"'); '\
+'    BASH_D_INCLUDE_FILE=$BASH_D_DIR/$(basename -s .sh $BASH_D_INCLUDE_FILE).sh; '\
+'    BASH_D_INCLUDE_FILES+=("$BASH_D_INCLUDE_FILE"); '\
+'  else '\
+'    if alias | grep "echo_e" >/dev/null; then '\
+'      echo_e "$BASH_D_INCLUDE_FILE will be unavailable"; '\
+'    else '\
+'      >&2 echo "error: $BASH_D_INCLUDE_FILE will be unavailable"; '\
+'    fi; '\
+'    if [ "$BASH_D_INCLUDE_FILE" != "$BASH_D_DIR/bash_d.sh" ] && $BASH_D_FAIL_ON_INCLUDE_ERROR; then '\
+'      exit 1; '\
+'    fi '\
+'  fi '\
+'fi '\
+'# '
 
 ### main #######################################################################
 
@@ -112,6 +90,3 @@ if [ ! -d "$BASH_D_DIR" ]; then
 fi
 
 shopt -s expand_aliases
-# shellcheck disable=SC1090 # dynamic include
-source "${BASH_SOURCE[0]}"  # because bash_d_include_guard wasn't available
-                            # on the first run

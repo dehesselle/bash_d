@@ -10,9 +10,9 @@
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
 
-bash_d_include_guard
+# Nothing here.
 
 ### variables ##################################################################
 

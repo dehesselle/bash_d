@@ -1,5 +1,4 @@
 assert_darwin
-bash_d_include_guard
 
 ### description ################################################################
 

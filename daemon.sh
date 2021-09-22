@@ -14,8 +14,6 @@
 
 ### includes ###################################################################
 
-bash_d_include_guard
-
 bash_d_include echo
 bash_d_include xdg
 
