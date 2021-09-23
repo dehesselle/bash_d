@@ -1,16 +1,25 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
 
-### includes ###################################################################
+### description ################################################################
 
-bash_d_include exit.sh
-bash_d_include ini.sh
+# Conveneince handling for developer information.
+
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
+
+### dependencies ###############################################################
+
+bash_d_include plist
+bash_d_include xdg
 
 ### variables ##################################################################
 
-DEVELOPER_CREDENTIALS_FILE=$XDG_CONFIG_HOME/apple_developer
-DEVELOPER_ID=
-DEVELOPER_USERNAME=
+if [ -z "$DEVELOPER_SETTINGS_FILE" ]; then
+  DEVELOPER_SETTINGS_FILE=$XDG_CONFIG_HOME/apple_developer.plist
+fi
 
 ### functions ##################################################################
 
@@ -18,11 +27,13 @@ DEVELOPER_USERNAME=
 
 ### aliases ####################################################################
 
-# Nothing here.
+# create developer_settings_* aliases
+plist_instantiate "$DEVELOPER_SETTINGS_FILE" developer_settings
+
+# for convenience
+alias developer_get_id='developer_settings_get developer id'
+alias developer_get_username='developer_settings developer username'
 
 ### main #######################################################################
 
-exit_if_file_missing $DEVELOPER_CREDENTIALS_FILE
-ini_read $DEVELOPER_CREDENTIALS_FILE
-DEVELOPER_ID=$(ini_get developer_id)
-DEVELOPER_USERNAME=$(ini_get username)
+# Nothing here.

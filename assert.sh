@@ -11,7 +11,7 @@
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 bash_d_include echo
 
@@ -27,6 +27,9 @@ ASSERT_RC=0
 
 # Bash version
 alias assert_bash4_or_above='[ ${BASH_VERSINFO[0]} -lt 4 ] && echo_e "$(basename ${BASH_SOURCE[0]}) will be unavailable (depends on bash >= 4)" && return $LINENO || true'
+
+# Git
+alias assert_git='[ ! -x "$(command -v git)" ] && echo_e "$(basename ${BASH_SOURCE[0]}) will be unavailable (depends on git)" && return $LINENO || true'
 
 # Unix platforms
 alias assert_darwin='[ "$(uname)" != "Darwin" ] && echo_e "Darwin required" && return $LINENO || true'

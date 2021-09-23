@@ -1,136 +1,94 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
-
-assert_bash4_or_above
 
 ### description ################################################################
 
-# This file provides functions to read and write *.ini files. They are only
-# suitable for simple cases as a lot of corner cases aren't handled (e.g.
-# newlines in values). Also, neither the order of the elements/sections
-# will be preserved. Same goes for commentary.
+# This file provides functions to read and write *.ini files. The inspiration
+# to abuse git as generali-purpose ini parser came from
+# https://serverfault.com/a/985355a - neat!
 
-### includes ###################################################################
+### shellcheck #################################################################
 
-bash_d_include echo.sh
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
+
+### dependencies ###############################################################
+
+assert_git
+bash_d_include echo
 
 ### variables ##################################################################
 
-declare -g -A INI_DATA   # key-value store
-INI_FILE=                # last file that has been accessed
+if [ -z "$INI_FILE" ]; then
+  INI_FILE=
+fi
 
 ### functions ##################################################################
 
-function ini_get
+function ini_get__
 {
-  if [ $# -eq 1 ]; then
-    local section=1default
-    local key=$1
-  else
-    local section=$1
-    local key=$2
-  fi
+  local file=$1
+  local section=$2
+  local key=$3
+  local value_default=$4
 
-  if [ ${INI_DATA[$section|$key]+dummy} ]; then
-    echo ${INI_DATA[$section|$key]}
-  else
-    echo_e "no value for $section|$key"
-    echo ""
-  fi
-}
-
-function ini_read
-{
-  INI_FILE=$1
-
-  if [ -f $INI_FILE ]; then
-    while IFS= read -r line; do
-      if [[ "$line" =~ ([^|]+)\|([^|]+)\|([^|]*) ]]; then
-        local section="${BASH_REMATCH[1]}"
-        local key="${BASH_REMATCH[2]}"
-        local value="${BASH_REMATCH[3]}"
-        #echo "$section.$key.$value"
-        INI_DATA[$section|$key]=$value
-      fi
-    done < <(sed -n '
-### Code adopted from
-### https://michipili.github.io/shell/2015/06/05/shell-configuration-file.html
-###
-### Configuration bindings found outside any section are given to the default
-### section.
-1 {
-  x
-  s/^/1default/
-  x
-}
-### Lines starting with a #-character are comments.
-/^#/n
-### Sections are unpacked and stored in the hold space.
-/^\[/ {
-  s/\[\(.*\)\]/\1/
-  x
-  b
-}
-### Bindings are unpacked and decorated with the section they belong to,
-### before being printed.
-/=/ {
-  s/^[[:space:]]*//
-  s/[[:space:]]*=[[:space:]]*/|/
-  G
-  s/\(.*\)\n\(.*\)/\2|\1/
-  p
-}' $INI_FILE)
-  else
-    echo_e "file not found: $INI_FILE"
-    exit 1
-  fi
-}
-
-function ini_set
-{
-  if [ $# -eq 2 ]; then
-    local section=1default
-    local key=$1
-    local value=$2
-  else
-    local section=$1
-    local key=$2
-    local value=$3
-  fi
-
-  INI_DATA[$section|$key]=$value
-}
-
-function ini_write
-{
-  INI_FILE=$1
-
-  >$file
-
-  local section
-  local section_old
-
-  for key in $(echo ${!INI_DATA[@]} | tr " " "\n" | sort); do
-    if [[ "$key" =~ (.+)\|(.+) ]]; then
-      section=${BASH_REMATCH[1]}
-      key=${BASH_REMATCH[2]}
-
-      if   [ "$section"  = "1default" ]; then
-        :    # do not create a section for "globals"
-      elif [ "$section" != "$section_old" ]; then
-        echo ""           >> $INI_FILE
-        echo "[$section]" >> $INI_FILE
-        section_old=$section
-      fi
-
-      echo "$key = ${INI_DATA[$section|$key]}" >> $INI_FILE
+  if ! git config -f "$file" --get "$section"."$key" 2>/dev/null; then
+    if [ -n "$value_default" ]; then
+      ini_set__ "$file" "$section" "$key" "$value_default"
+      echo "$value_default"
+    else
+      return 1
     fi
-  done
+  fi
+}
+
+function ini_set__
+{
+  local file=$1
+  local section=$2
+  local key=$3
+  local value=$4
+  local type=$5   # optional, defaults to "no type" which will be string
+
+  if [ -n "$type" ]; then
+    type="--type $type"
+  fi
+
+  # shellcheck disable=SC2086 # need word splitting for '$type'
+  if ! git config -f "$file" $type "$section"."$key" "$value" 2>/dev/null; then
+    echo_e "unable to set $section:$key"
+    return 1
+  fi
+}
+
+function ini_del__
+{
+  local file=$1
+  local section=$2
+  local key=$3
+
+  if ! git config -f "$file" --unset "$section"."$key" 2>/dev/null; then
+    echo_e "unable to delete $section:$key"
+    return 1
+  fi
+}
+
+# shellcheck disable=SC2086,SC2139,SC2140 # expansion on definition is ok
+function ini_instantiate
+{
+  local file=$1
+  local name=$2
+
+  alias ${name}_del="ini_del__ $file"
+  alias ${name}_get="ini_get__ $file"
+  alias ${name}_set="ini_set__ $file"
 }
 
 ### aliases ####################################################################
 
-# Nothing here.
+alias ini_del='ini_del__ $INI_FILE'
+alias ini_get='ini_get__ $INI_FILE'
+alias ini_set='ini_set__ $INI_FILE'
 
 ### main #######################################################################
 

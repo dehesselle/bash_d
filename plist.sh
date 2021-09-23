@@ -18,20 +18,22 @@ bash_d_include echo
 
 ### variables ##################################################################
 
-PLIST_FILE=
+if [ -z "$PLIST_FILE" ]; then
+  PLIST_FILE=
+fi
 
 ### functions ##################################################################
 
-function plist_get
+function plist_get__
 {
-  local dict=$1
-  local key=$2
-  local value_default=$3
+  local file=$1
+  local dict=$2
+  local key=$3
+  local value_default=$4
 
-  if ! /usr/libexec/PlistBuddy \
-      -c "Print $dict:$key" "$PLIST_FILE" 2>/dev/null; then
+  if ! /usr/libexec/PlistBuddy -c "Print $dict:$key" "$file" 2>/dev/null; then
     if [ -n "$value_default" ]; then
-      plist_set "$dict" "$key" "$value_default"
+      plist_set__ "$file" "$dict" "$key" "$value_default"
       echo "$value_default"
     else
       return 1
@@ -39,31 +41,33 @@ function plist_get
   fi
 }
 
-function plist_set
+function plist_set__
 {
-  local dict=$1
-  local key=$2
-  local value=$3
-  local type=$4   # optional, defaults to string
+  local file=$1
+  local dict=$2
+  local key=$3
+  local value=$4
+  local type=$5   # optional, defaults to string
 
   if [ -z "$type" ]; then
     type=string
   fi
 
   if ! /usr/libexec/PlistBuddy \
-      -c "Set '$dict:$key' '$value'" "$PLIST_FILE" 2>/dev/null; then
+      -c "Set '$dict:$key' '$value'" "$file" 2>/dev/null; then
     if ! /usr/libexec/PlistBuddy \
-        -c "Add '$dict:$key' '$type' '$value'" "$PLIST_FILE" 2>/dev/null; then
+        -c "Add '$dict:$key' '$type' '$value'" "$file" 2>/dev/null; then
       echo_e "unable to set $dict:$key"
       return 1
     fi
   fi
 }
 
-function plist_del
+function plist_del__
 {
-  local dict=$1
-  local key=$2
+  local file=$1
+  local dict=$2
+  local key=$3
 
   if ! /usr/libexec/PlistBuddy \
       -c "Delete '$dict:$key'" "$PLIST_FILE" 2>/dev/null; then
@@ -72,9 +76,22 @@ function plist_del
   fi
 }
 
+# shellcheck disable=SC2086,SC2139,SC2140 # expansion on definition is ok
+function plist_instantiate
+{
+  local file=$1
+  local name=$2
+
+  alias ${name}_del="plist_del__ $file"
+  alias ${name}_get="plist_get__ $file"
+  alias ${name}_set="plist_set__ $file"
+}
+
 ### aliases ####################################################################
 
-# Nothing here.
+alias plist_del='plist_del__ $PLIST_FILE'
+alias plist_get='plist_get__ $PLIST_FILE'
+alias plist_set='plist_set__ $PLIST_FILE'
 
 ### main #######################################################################
 

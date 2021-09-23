@@ -1,11 +1,18 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
 
-assert_darwin
+### description ################################################################
 
-### includes ###################################################################
+# Convenience functions to notarize software.
 
-bash_d_include developer.sh
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
+
+### dependencies ###############################################################
+
+bash_d_include developer
 
 ### variables ##################################################################
 
@@ -22,13 +29,13 @@ function notarization_request
   xcrun altool \
     --notarize-app \
     --primary-bundle-id "$bundle_id" \
-    --username "$DEVELOPER_USERNAME" \
+    --username "$(developer_get_username)" \
     --file $app
 }
 
 ### aliases ####################################################################
 
-alias notarization_info='xcrun altool --username "$DEVELOPER_USERNAME" --notarization-info'
+alias notarization_info='xcrun altool --username "$(developer_get_username)" --notarization-info'
 alias notarization_staple='xcrun stapler staple'
 
 ### main #######################################################################

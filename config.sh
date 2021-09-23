@@ -4,7 +4,7 @@
 
 ### description ################################################################
 
-# Abstraction ontop of backends like ini.sh or plist.sh.
+# Abstraction and convenience layer ontop of backends ini.sh and plist.sh.
 
 ### shellcheck #################################################################
 
@@ -64,11 +64,15 @@ function config_get_dir
 function config_get_file
 {
   local file
-  file=$(basename -s .sh "$0").$CONFIG_FILE_SUFFIX
+  if bash_d_is_included plist; then
+    file=$(basename -s .sh "$0").plist
+  else
+    file=$(basename -s .sh "$0").ini
+  fi
 
   file=$XDG_CONFIG_HOME/$file
   if [ ! -f "$file" ]; then
-    file=$(dirname "$0")/$(basename "$file")
+    file=$(dirname "$0")/$file
     if [ ! -f "$file" ]; then
       basename "$file"
       return 1
@@ -78,33 +82,39 @@ function config_get_file
   echo "$file"
 }
 
+function config_instantiate
+{
+  local file=$1
+  local name=$2
+
+  if bash_d_is_included plist; then
+    alias config_${name}_del="plist_del__ $file"
+    alias config_${name}_get="plist_get__ $file"
+    alias config_${name}_set="plist_set__ $file"
+  else
+    alias config_${name}_del="ini_del__ $file"
+    alias config_${name}_get="ini_get__ $file"
+    alias config_${name}_set="ini_set__ $file"
+  fi
+}
+
 ### aliases ####################################################################
 
-# See main section.
+if bash_d_is_included plist; then
+  alias config_del='plist_del $CONFIG_FILE'
+  alias config_get='plist_get $CONFIG_FILE'
+  alias config_set='plist_set $CONFIG_FILE'
+else
+  alias config_del='ini_del $CONFIG_FILE'
+  alias config_get='ini_get $CONFIG_FILE'
+  alias config_set='ini_set $CONFIG_FILE'
+fi
 
 ### main #######################################################################
-
-if [ "$(uname)" = "Darwin" ]; then
-  alias config_get='plist_get'
-  alias config_set='plist_set'
-  CONFIG_FILE_SUFFIX=plist
-else
-  alias config_get='ini_get'
-  alias config_set='ini_set'
-  CONFIG_FILE_SUFFIX=ini
-fi
 
 if [ -z "$CONFIG_FILE" ]; then
   if ! CONFIG_FILE=$(config_get_file); then
     CONFIG_DIR=$(config_get_dir)
     CONFIG_FILE=$CONFIG_DIR/$CONFIG_FILE
   fi
-fi
-
-if [ "$CONFIG_FILE_SUFFIX" = "plist" ]; then
-  # shellcheck disable=SC2034 # included from plist.sh
-  PLIST_FILE=$CONFIG_FILE
-else
-  # shellcheck disable=SC2034 # included from ini.sh
-  INI_FILE=$CONFIG_FILE
 fi

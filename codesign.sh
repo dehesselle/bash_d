@@ -1,11 +1,18 @@
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-# https://github.com/dehesselle/bash_d
 
-assert_darwin
+### description ################################################################
 
-### includes ###################################################################
+# Conveneince handling for signing software.
 
-bash_d_include developer.sh
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
+
+### dependencies ###############################################################
+
+bash_d_include developer
 
 ### variables ##################################################################
 
@@ -18,7 +25,7 @@ function codesign_file
   local file=$1
   local options=$2   # optional
 
-  codesign --verbose --options runtime --timestamp $options --sign "$DEVELOPER_ID" $file
+  codesign --verbose --options runtime --timestamp $options --sign "$(developer_get_id)" $file
 }
 
 function codesign_files
