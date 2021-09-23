@@ -32,23 +32,27 @@ fi
 
 function bash_d_include_all
 {
-  local includes=$(mktemp $TMP/$FUNCNAME.XXXXXX)
+  local includes
+  includes=$(mktemp "$TMP/${FUNCNAME[0]}".XXXXXX)
 
-  echo "BASH_D_FAIL_ON_INCLUDE_ERROR=false" >> $includes
+  echo "BASH_D_FAIL_ON_INCLUDE_ERROR=false" >> "$includes"
   for file in "$BASH_D_DIR"/*.sh; do
-    echo "bash_d_include $(basename $file)" >> $includes
+    echo "bash_d_include $(basename "$file")" >> "$includes"
   done
+  echo "BASH_D_FAIL_ON_INCLUDE_ERROR=true" >> "$includes"
 
-  source $includes
-  rm $includes
+  # shellcheck disable=SC1090 # dynamic sourcing on purpose
+  source "$includes"
+  rm "$includes"
 }
 
 function bash_d_is_included
 {
   local file=$1
 
+  #shellcheck disable=SC2076 # we want literal match, not regex
   if [[ " ${BASH_D_INCLUDE_FILES[*]} " =~ \
-        " $BASH_D_DIR/$(basename -s .sh $file).sh " ]]; then
+        " $BASH_D_DIR/$(basename -s .sh "$file").sh " ]]; then
     return 0
   else
     return 1
@@ -65,7 +69,9 @@ alias bash_d_include=\
 'if [[ " ${BASH_D_INCLUDE_FILES[@]} " =~ " ${BASH_D_INCLUDE_FILE} " ]]; then '\
 '  : ; '\
 'else '\
-'  if [ "$BASH_D_INCLUDE_FILE" = "$BASH_D_DIR/bash_d.sh" ] || source $BASH_D_INCLUDE_FILE; then '\
+'  if  [ "$BASH_D_INCLUDE_FILE" = "$BASH_D_DIR/bash_d.sh" ] && '\
+'        [ ${#BASH_D_INCLUDE_FILES[@]} -gt 0 ] || '\
+'      source $BASH_D_INCLUDE_FILE; then '\
 '    BASH_D_INCLUDE_FILE=$(sed -n ${LINENO}p ${BASH_SOURCE[0]} | awk '"'"'{ print $2 }'"'"'); '\
 '    BASH_D_INCLUDE_FILE=$BASH_D_DIR/$(basename -s .sh $BASH_D_INCLUDE_FILE).sh; '\
 '    BASH_D_INCLUDE_FILES+=("$BASH_D_INCLUDE_FILE"); '\
@@ -90,3 +96,5 @@ if [ ! -d "$BASH_D_DIR" ]; then
 fi
 
 shopt -s expand_aliases
+
+bash_d_include bash_d   # Need to rerun so complete setting us up.
