@@ -113,8 +113,10 @@ fi
 ### main #######################################################################
 
 if [ -z "$CONFIG_FILE" ]; then
-  if ! CONFIG_FILE=$(config_get_file); then
-    CONFIG_DIR=$(config_get_dir)
-    CONFIG_FILE=$CONFIG_DIR/$CONFIG_FILE
+  if [ "$0" != "-bash" ]; then
+    if ! CONFIG_FILE=$(config_get_file); then
+      CONFIG_DIR=$(config_get_dir)
+      CONFIG_FILE=$CONFIG_DIR/$CONFIG_FILE
+    fi
   fi
 fi
