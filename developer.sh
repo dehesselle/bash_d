@@ -32,7 +32,7 @@ plist_instantiate "$DEVELOPER_SETTINGS_FILE" developer_settings
 
 # for convenience
 alias developer_get_id='developer_settings_get developer id'
-alias developer_get_username='developer_settings developer username'
+alias developer_get_username='developer_settings_get developer username'
 
 ### main #######################################################################
 
