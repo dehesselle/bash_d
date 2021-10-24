@@ -5,7 +5,7 @@
 ### description ################################################################
 
 # This file provides functions to read and write *.ini files. The inspiration
-# to abuse git as generali-purpose ini parser came from
+# to abuse git as general-purpose ini parser came from
 # https://serverfault.com/a/985355a - neat!
 
 ### shellcheck #################################################################
