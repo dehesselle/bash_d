@@ -20,11 +20,9 @@ bash_d_include assert 2>/dev/null || true
 
 ### variables ##################################################################
 
-if [ -z "$BASH_D_DIR" ]; then
-  BASH_D_DIR=$(dirname "${BASH_SOURCE[0]}")
-fi
+BASH_D_DIR=${BASH_D_DIR:-$(dirname "${BASH_SOURCE[0]}")}
 
-if [ -z "$BASH_D_FAIL_ON_INCLUDE_ERROR" ]; then
+if [ "$BASH_D_FAIL_ON_INCLUDE_ERROR" != "false" ]; then
   BASH_D_FAIL_ON_INCLUDE_ERROR=true
 fi
 

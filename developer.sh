@@ -17,9 +17,7 @@ bash_d_include xdg
 
 ### variables ##################################################################
 
-if [ -z "$DEVELOPER_SETTINGS_FILE" ]; then
-  DEVELOPER_SETTINGS_FILE=$XDG_CONFIG_HOME/apple_developer.plist
-fi
+DEVELOPER_SETTINGS=${DEVELOPER_SETTINGS:-$XDG_CONFIG_HOME/apple_developer.plist}
 
 ### functions ##################################################################
 
@@ -28,7 +26,7 @@ fi
 ### aliases ####################################################################
 
 # create developer_settings_* aliases
-plist_instantiate "$DEVELOPER_SETTINGS_FILE" developer_settings
+plist_instantiate "$DEVELOPER_SETTINGS" developer_settings
 
 # for convenience
 alias developer_get_id='developer_settings_get developer id'

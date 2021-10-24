@@ -18,9 +18,7 @@ bash_d_include echo
 
 ### variables ##################################################################
 
-if [ -z "$PLIST_FILE" ]; then
-  PLIST_FILE=
-fi
+PLIST_FILE=${PLIST_FILE:-}   # defined here for interface visibility
 
 ### functions ##################################################################
 

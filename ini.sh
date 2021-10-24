@@ -19,9 +19,7 @@ bash_d_include echo
 
 ### variables ##################################################################
 
-if [ -z "$INI_FILE" ]; then
-  INI_FILE=
-fi
+INI_FILE=${INI_FILE:-}   # defined here for interface visibility
 
 ### functions ##################################################################
 

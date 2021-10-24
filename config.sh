@@ -23,13 +23,8 @@ fi
 
 ### variables ##################################################################
 
-if [ -z "$CONFIG_DIR" ]; then
-  CONFIG_DIR=
-fi
-
-if [ -z "$CONFIG_FILE" ]; then
-  CONFIG_FILE=
-fi
+CONFIG_DIR=${CONFIG_DIR:-}       # defined here for interface visibility
+CONFIG_FILE=${CONFIG_FILE:-}     # defined here for interface visibility
 
 ### functions ##################################################################
 
