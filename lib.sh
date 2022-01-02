@@ -14,10 +14,11 @@
 
 assert_darwin
 bash_d_include echo
+bash_d_include readlinkf
 
 ### variables ##################################################################
 
-# Nothing here.
+LIB_RESET_ID=keep   # options: basename, canonical, keep
 
 ### functions ##################################################################
 
@@ -33,7 +34,6 @@ function lib_change_path
   local source_lib=${target##*/}   # get library filename from target location
 
   for binary in $binaries; do   # won't work if spaces in paths
-    # reset ID for libraries
     if [[ $binary == *.so ]] ||
        [[ $binary == *.dylib ]] ||
        [ $(file $binary | grep "shared library" | wc -l) -eq 1 ]; then
@@ -95,7 +95,20 @@ function lib_reset_id
 {
   local lib=$1
 
-  install_name_tool -id $(basename $lib) $lib
+  case "$LIB_RESET_ID" in
+    basename)
+      install_name_tool -id $(basename $lib) $lib
+      ;;
+    canonical)
+      install_name_tool -id $(readlinkf $lib) $lib
+      ;;
+    keep)
+      : # don't do anything
+      ;;
+    *)
+      echo_e "invalid value for LIB_RESET_ID: $LIB_RESET_ID"
+      ;;
+  esac
 }
 
 function lib_add_rpath
