@@ -20,7 +20,7 @@ bash_d_include ansi
 
 ### functions ##################################################################
 
-function echo_message__
+function echo_message
 {
   local funcname=$1   # empty if outside function
   local filename=$2
@@ -41,11 +41,11 @@ function echo_message__
 
 ### aliases ####################################################################
 
-alias echo_d='>&2 echo_message__ "$FUNCNAME" "${BASH_SOURCE[0]}" "debug" "$ANSI_FG_BLUE_BOLD"'
-alias echo_e='>&2 echo_message__ "$FUNCNAME" "${BASH_SOURCE[0]}" "error" "$ANSI_FG_RED_BRIGHT"'
-alias echo_i='>&2 echo_message__ "$FUNCNAME" "${BASH_SOURCE[0]}" "info" "$ANSI_FG_BLUE_BRIGHT"'
-alias echo_o='>&2 echo_message__ "$FUNCNAME" "${BASH_SOURCE[0]}" "ok" "$ANSI_FG_GREEN_BRIGHT"'
-alias echo_w='>&2 echo_message__ "$FUNCNAME" "${BASH_SOURCE[0]}" "warning" "$ANSI_FG_YELLOW_BRIGHT"'
+alias echo_d='>&2 echo_message "$FUNCNAME" "${BASH_SOURCE[0]}" "debug" "$ANSI_FG_BLUE_BOLD"'
+alias echo_e='>&2 echo_message "$FUNCNAME" "${BASH_SOURCE[0]}" "error" "$ANSI_FG_RED_BRIGHT"'
+alias echo_i='>&2 echo_message "$FUNCNAME" "${BASH_SOURCE[0]}" "info" "$ANSI_FG_BLUE_BRIGHT"'
+alias echo_o='>&2 echo_message "$FUNCNAME" "${BASH_SOURCE[0]}" "ok" "$ANSI_FG_GREEN_BRIGHT"'
+alias echo_w='>&2 echo_message "$FUNCNAME" "${BASH_SOURCE[0]}" "warning" "$ANSI_FG_YELLOW_BRIGHT"'
 
 ### main #######################################################################
 
