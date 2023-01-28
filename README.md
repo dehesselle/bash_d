@@ -1,9 +1,7 @@
 # `bash_d`
 
-Conceived as part of my (unpublished) dotfiles on macOS, this collection of functions outgrew its originally limited scope and I began developing this into the spiritual successor of [bashlib](https://github.com/dehesselle/bashlib).
-
-This is far from finished and comes with no support and without documentation at this point, but I need to put this online now so I can start using this in other projects.
+A collection of (common) functions that I use in my bash scripts. Work in progress, needs more polish and cleaning up.
 
 ## License
 
-[GPL](LICENSE)
+[GPL-2.0-or-later](LICENSE)
