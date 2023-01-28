@@ -22,7 +22,7 @@ bash_d_include echo
 
 # This acts as a scope limiter: it makes our items easily identifiable and
 # limits our access to them.
-KEYCHAIN_ITEM_COMMENT="bash_d"
+KEYCHAIN_ITEM_COMMENT=${KEYCHAIN_ITEM_COMMENT:-bash_d}
 
 ### functions ##################################################################
 
