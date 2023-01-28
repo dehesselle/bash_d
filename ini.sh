@@ -23,7 +23,7 @@ INI_FILE=${INI_FILE:-}   # defined here for interface visibility
 
 ### functions ##################################################################
 
-function ini_get__
+function _ini_get
 {
   local file=$1
   local section=$2
@@ -32,7 +32,7 @@ function ini_get__
 
   if ! git config -f "$file" --get "$section"."$key" 2>/dev/null; then
     if [ -n "$value_default" ]; then
-      ini_set__ "$file" "$section" "$key" "$value_default"
+      _ini_set "$file" "$section" "$key" "$value_default"
       echo "$value_default"
     else
       return 1
@@ -40,7 +40,7 @@ function ini_get__
   fi
 }
 
-function ini_set__
+function _ini_set
 {
   local file=$1
   local section=$2
@@ -59,7 +59,7 @@ function ini_set__
   fi
 }
 
-function ini_del__
+function _ini_del
 {
   local file=$1
   local section=$2
@@ -77,16 +77,16 @@ function ini_instantiate
   local file=$1
   local name=$2
 
-  alias ${name}_del="ini_del__ $file"
-  alias ${name}_get="ini_get__ $file"
-  alias ${name}_set="ini_set__ $file"
+  alias ${name}_del="_ini_del $file"
+  alias ${name}_get="_ini_get $file"
+  alias ${name}_set="_ini_set $file"
 }
 
 ### aliases ####################################################################
 
-alias ini_del='ini_del__ $INI_FILE'
-alias ini_get='ini_get__ $INI_FILE'
-alias ini_set='ini_set__ $INI_FILE'
+alias ini_del='_ini_del $INI_FILE'
+alias ini_get='_ini_get $INI_FILE'
+alias ini_set='_ini_set $INI_FILE'
 
 ### main #######################################################################
 

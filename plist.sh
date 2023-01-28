@@ -22,7 +22,7 @@ PLIST_FILE=${PLIST_FILE:-}   # defined here for interface visibility
 
 ### functions ##################################################################
 
-function plist_get__
+function _plist_get
 {
   local file=$1
   local dict=$2
@@ -31,7 +31,7 @@ function plist_get__
 
   if ! /usr/libexec/PlistBuddy -c "Print $dict:$key" "$file" 2>/dev/null; then
     if [ -n "$value_default" ]; then
-      plist_set__ "$file" "$dict" "$key" "$value_default"
+      _plist_set "$file" "$dict" "$key" "$value_default"
       echo "$value_default"
     else
       return 1
@@ -39,7 +39,7 @@ function plist_get__
   fi
 }
 
-function plist_set__
+function _plist_set
 {
   local file=$1
   local dict=$2
@@ -61,7 +61,7 @@ function plist_set__
   fi
 }
 
-function plist_del__
+function _plist_del
 {
   local file=$1
   local dict=$2
@@ -80,16 +80,16 @@ function plist_instantiate
   local file=$1
   local name=$2
 
-  alias ${name}_del="plist_del__ $file"
-  alias ${name}_get="plist_get__ $file"
-  alias ${name}_set="plist_set__ $file"
+  alias ${name}_del="_plist_del $file"
+  alias ${name}_get="_plist_get $file"
+  alias ${name}_set="_plist_set $file"
 }
 
 ### aliases ####################################################################
 
-alias plist_del='plist_del__ $PLIST_FILE'
-alias plist_get='plist_get__ $PLIST_FILE'
-alias plist_set='plist_set__ $PLIST_FILE'
+alias plist_del='_plist_del $PLIST_FILE'
+alias plist_get='_plist_get $PLIST_FILE'
+alias plist_set='_plist_set $PLIST_FILE'
 
 ### main #######################################################################
 

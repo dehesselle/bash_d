@@ -83,13 +83,13 @@ function config_instantiate
   local name=$2
 
   if bash_d_is_included plist; then
-    alias config_${name}_del="plist_del__ $file"
-    alias config_${name}_get="plist_get__ $file"
-    alias config_${name}_set="plist_set__ $file"
+    alias config_${name}_del="_plist_del $file"
+    alias config_${name}_get="_plist_get $file"
+    alias config_${name}_set="_plist_set $file"
   else
-    alias config_${name}_del="ini_del__ $file"
-    alias config_${name}_get="ini_get__ $file"
-    alias config_${name}_set="ini_set__ $file"
+    alias config_${name}_del="_ini_del $file"
+    alias config_${name}_get="_ini_get $file"
+    alias config_${name}_set="_ini_set $file"
   fi
 }
 
