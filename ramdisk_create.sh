@@ -48,27 +48,18 @@ function ramdisk_create
     else   # If a directory has been given, we cannot use diskutil but need
            # to peform the necessary steps ourselves so we can set the
            # mountpoint.
-      if [ $(/sbin/mount | grep "$dir" | wc -l) -eq 0 ]; then
+      if [ "$(/sbin/mount | grep -c "$dir")" -eq 0 ]; then
         # create ramdisk device
         local device
-        device=$(hdiutil attach -nomount ram://$size_numsectors)
-        local rc=$?
-
-        if [ $rc -eq 0 ]; then
-          if [ -z $name ]; then
+        if device=$(hdiutil attach -nomount ram://"$size_numsectors"); then
+          if [ -z "$name" ]; then
             name="RAMDISK"  # TODO: make unique?
           fi
           # create filesystem in ramdisk device
-          /sbin/newfs_hfs -v "$name" $device
-          rc=$?
-
-          if [ $rc -eq 0 ]; then
+          if /sbin/newfs_hfs -v "$name" $device; then  # device unquoted on purpose!
             # mount volume, hidden in Finder
-            /sbin/mount -o noatime,nobrowse -t hfs $device $dir
-            rc=$?
-
-            if [ $rc -eq 0 ]; then
-              chmod 775 $dir
+            if /usr/sbin/diskutil mount -mountOptions noatime,nobrowse -mountPoint "$dir" $device; then
+              chmod 775 "$dir"
               echo_o "$dir"
             else
               echo_e "failed to mount ramdisk"
